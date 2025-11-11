@@ -1,11 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36616.10 d17.14
+VisualStudioVersion = 17.14.36616.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overflow.AppHost", "Overflow\Overflow.AppHost\Overflow.AppHost.csproj", "{5A70DC8A-FADA-485A-8EA2-4A59F3D8465F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overflow.ServiceDefaults", "Overflow\Overflow.ServiceDefaults\Overflow.ServiceDefaults.csproj", "{F05C8934-D36E-EDC7-C7DF-71D874DAB3FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overflow.Identity", "Overflow.Identity\Overflow.Identity.csproj", "{75AA79A7-FE0A-ADA9-B439-DF7478779001}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +28,10 @@ Global
 		{F05C8934-D36E-EDC7-C7DF-71D874DAB3FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F05C8934-D36E-EDC7-C7DF-71D874DAB3FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F05C8934-D36E-EDC7-C7DF-71D874DAB3FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75AA79A7-FE0A-ADA9-B439-DF7478779001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75AA79A7-FE0A-ADA9-B439-DF7478779001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75AA79A7-FE0A-ADA9-B439-DF7478779001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75AA79A7-FE0A-ADA9-B439-DF7478779001}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
