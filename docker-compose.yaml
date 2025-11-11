@@ -7,11 +7,11 @@ services:
     environment:
       POSTGRES_USER: usuario
       POSTGRES_PASSWORD: contrasenya
-      POSTGRES_DB: postgres
+      POSTGRES_DB: identitydb
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
+      test: ["CMD-SHELL", "pg_isready -U usuario -d identitydb"]  
       interval: 10s
       timeout: 5s
       retries: 5
