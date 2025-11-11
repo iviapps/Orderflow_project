@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36616.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overflow.AppHost", "Overflow\Overflow.AppHost\Overflow.AppHost.csproj", "{5A70DC8A-FADA-485A-8EA2-4A59F3D8465F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overflow.ServiceDefaults", "Overflow\Overflow.ServiceDefaults\Overflow.ServiceDefaults.csproj", "{F05C8934-D36E-EDC7-C7DF-71D874DAB3FE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overflow.Identity", "Overflow.Identity\Overflow.Identity.csproj", "{75AA79A7-FE0A-ADA9-B439-DF7478779001}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}"
@@ -14,24 +10,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		docker-compose.yaml = docker-compose.yaml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overflow.AppHost", "Overflow.AppHost\Overflow.AppHost.csproj", "{11B476FD-7D4A-4802-CA38-565E65AE72DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overflow.ServiceDefaults", "Overflow.ServiceDefaults\Overflow.ServiceDefaults.csproj", "{9FFD5E45-942B-0C74-AB32-283D13458368}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5A70DC8A-FADA-485A-8EA2-4A59F3D8465F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A70DC8A-FADA-485A-8EA2-4A59F3D8465F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A70DC8A-FADA-485A-8EA2-4A59F3D8465F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A70DC8A-FADA-485A-8EA2-4A59F3D8465F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F05C8934-D36E-EDC7-C7DF-71D874DAB3FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F05C8934-D36E-EDC7-C7DF-71D874DAB3FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F05C8934-D36E-EDC7-C7DF-71D874DAB3FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F05C8934-D36E-EDC7-C7DF-71D874DAB3FE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{75AA79A7-FE0A-ADA9-B439-DF7478779001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{75AA79A7-FE0A-ADA9-B439-DF7478779001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75AA79A7-FE0A-ADA9-B439-DF7478779001}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75AA79A7-FE0A-ADA9-B439-DF7478779001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11B476FD-7D4A-4802-CA38-565E65AE72DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11B476FD-7D4A-4802-CA38-565E65AE72DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11B476FD-7D4A-4802-CA38-565E65AE72DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11B476FD-7D4A-4802-CA38-565E65AE72DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FFD5E45-942B-0C74-AB32-283D13458368}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FFD5E45-942B-0C74-AB32-283D13458368}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FFD5E45-942B-0C74-AB32-283D13458368}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FFD5E45-942B-0C74-AB32-283D13458368}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

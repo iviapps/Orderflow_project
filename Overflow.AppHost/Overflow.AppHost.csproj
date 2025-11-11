@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Overflow.Identity\Overflow.Identity.csproj" />
+    <ProjectReference Include="..\Overflow.Identity\Overflow.Identity.csproj" />
   </ItemGroup>
 
 </Project>
