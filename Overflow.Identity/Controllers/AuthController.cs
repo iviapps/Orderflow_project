@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Authorization;    // [Authorize], [AllowAnonymous]
 namespace OrderFlow.Identity.Controllers      // Namespace normal, sin ".V2"
 {  // Namespace normal, sin ".V2" // Namespace lógico de la capa de API (v2 de Identity)
     [ApiController]
+    [Tags("Authentication V2")]
     [Route("api/auth")]
-
     [ApiVersion("2.0")]                           // Versión de la API gestionada por Asp.Versioning (v2)
-    [Tags("Authentication V2")]                   // Tag para documentación (Swagger/OpenAPI), agrupa endpoints bajo "Authentication V2"
+                 // Tag para documentación (Swagger/OpenAPI), agrupa endpoints bajo "Authentication V2"
     public class AuthController : ControllerBase  // Controller sin vistas, solo API
     {
         // Dependencias inyectadas vía constructor (DI container)
@@ -176,7 +176,7 @@ namespace OrderFlow.Identity.Controllers      // Namespace normal, sin ".V2"
             }
 
             // 5) Asignamos un rol por defecto, por ejemplo "Customer"
-            await _userManager.AddToRoleAsync(user, "Customer");
+            await _userManager.AddToRoleAsync(user, "USER");
 
             _logger.LogInformation("User successfully registered: {UserId} - {Email}", user.Id, user.Email);
 

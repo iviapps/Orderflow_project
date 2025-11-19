@@ -88,7 +88,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// (9) Auto-migrar y seed de roles SOLO en Development
+// (9) Auto-migrar y seed de roles SOLO en Development - -      -   -   -   -   -   -   -   -   -   -   -   
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();     // Crea scope para resolver servicios de DI
@@ -115,8 +115,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//- -   -   -   -   -   -       -   -   -   -   -   -   -   -   -   -   -   -   -   --  
+
 // (10) Middleware pipeline
-app.UseHttpsRedirection();                            // Fuerza HTTPS (si aplica en tu entorno)
+app.UseHttpsRedirection();
+app.UseCors();                         // Fuerza HTTPS (si aplica en tu entorno)
 app.UseAuthentication();                              // Valida el JWT, rellena HttpContext.User
 app.UseAuthorization();                               // Aplica [Authorize], roles, policies...
 

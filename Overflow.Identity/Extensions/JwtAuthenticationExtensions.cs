@@ -8,6 +8,8 @@ public static class JwtAuthenticationExtensions
 {
     /// <summary>
     /// Adds JWT Bearer authentication with standard configuration
+    /// 
+    /// CONFIGURACIÓN DE JWT 
     /// </summary>
     public static IServiceCollection AddJwtAuthentication(
         this IServiceCollection services,
