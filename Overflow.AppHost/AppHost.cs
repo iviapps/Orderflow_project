@@ -4,10 +4,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 // 1) Servidor Postgres con volumen de datos (persistencia real)
 var postgres = builder.AddPostgres("postgres")
-    .WithDataVolume(isReadOnly: false)
     .WithLifetime(ContainerLifetime.Persistent);
-
-
 
 
 //en el castor pone que no existe 

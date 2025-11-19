@@ -1,27 +1,28 @@
-using System.Reflection;
-using FluentValidation;
-using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using OrderFlow.Identity.Extensions;        // AddJwtAuthentication
-using Overflow.Identity.Data;               // AppDbContext
+using Microsoft.IdentityModel.Tokens;
+using OrderFlow.Identity.Extensions;
+using Overflow.Identity.Data;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// (1) Telemetría / health de Aspire
+
+
+// (1) Telemetría/health/endpoints de Aspire
 builder.AddServiceDefaults();
 
-// (2) ConnectionString inyectada por Aspire (identitydb viene del AppHost)
+// (2) ConnectionString inyectada por Aspire en runtime
 var connStr = builder.Configuration.GetConnectionString("identitydb");
 
-// (3) DbContext con Npgsql apuntando a identitydb
+// (3) DbContext con Npgsql
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseNpgsql(connStr);
 });
 
-// (4) ASP.NET Identity (usuarios + roles + EF Stores + SignInManager)
+// (4) ASP.NET Identity (Core + Roles + EF Stores)
 builder.Services
     .AddIdentityCore<IdentityUser>(opts =>
     {
@@ -34,69 +35,37 @@ builder.Services
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders()
-    .AddSignInManager(); // ? registra SignInManager<IdentityUser> en DI
+    .AddDefaultTokenProviders();
+//SECRETS
 
-// (5) Autenticación JWT (usa tu extensión JwtAuthenticationExtensions)
-builder.Services.AddJwtAuthentication(builder.Configuration);
+//builder.Configuration.AddUserSecrets<Program>();
 
-// (6) Autorización por políticas / roles
+//FALTA HACER LLAMADA A JWT 
+// (5) Autenticación JWT Bearer
+//EXTENSIONS>JWTAUTENTHICATIONEXTENSIONS 
+//currently using using OrderFlow.Identity.Extensions; <-  JwtAuthenticationExtensions modified by " public static IServiceCollection AddJwtAuthentication.." <- 
+//es un metodo extendido con this IServiceCollection services    <- lo que lo hace posible de exportar e inyectar en mi program 
+builder.Services.AddJwtAuthentication(builder.Configuration);   
+
 builder.Services.AddAuthorization();
 
-// (7) Infra básica API: controladores + FluentValidation (opcional pero coherente con tu controller)
+// (6) Infra básica API
 builder.Services.AddControllers();
-
-// Si usas IValidator<T> en el controller, activa esto:
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-// (8) Swagger + esquema de seguridad Bearer
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "OrderFlow.Identity",
-        Version = "v1"
-    });
-
-    var securityScheme = new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Description = "JWT Bearer. Usa: Bearer {token}",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        Reference = new OpenApiReference
-        {
-            Type = ReferenceType.SecurityScheme,
-            Id = "Bearer"
-        }
-    };
-
-    c.AddSecurityDefinition("Bearer", securityScheme);
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        { securityScheme, Array.Empty<string>() }
-    });
-});
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// (9) Auto-migrar y seed de roles SOLO en Development
+// (7) Auto-migrar y seed SOLO en Development
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await db.Database.MigrateAsync(); // Aplica migraciones pendientes
-
+    await db.Database.MigrateAsync(); // aplica migraciones pendientes
+    
     var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-    // Define los roles iniciales. Asegúrate de incluir "Customer" si lo usas en el controller.
-    var roles = new[] { "ADMIN", "USER", "Customer" };
-
+    // Define aquí los roles iniciales
+    var roles = new[] { "ADMIN", "USER" };
     foreach (var role in roles)
     {
         if (!await roleMgr.RoleExistsAsync(role))
@@ -105,21 +74,24 @@ if (app.Environment.IsDevelopment())
             Console.WriteLine($"[Seed] Rol creado: {role}");
         }
     }
-
-    // Swagger UI solo en desarrollo
+    
+    // Swagger solo en Development
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    
 }
 
-// (10) Middleware pipeline
+// (8) Middleware pipeline
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// (11) Mapear controladores de Web API
-app.MapControllers();
-
-// (12) Endpoints de health / telemetría de Aspire
+// (9) Endpoints de OpenAPI y health/telemetría de Aspire
+//app.mapopenapi <- no lo uso 
 app.MapDefaultEndpoints();
+
+// (10) Rutas de controladores
+app.MapControllers();
 
 app.Run();
