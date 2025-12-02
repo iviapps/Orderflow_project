@@ -1,10 +1,9 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-using Orderflow.Identity.DTOs.Auth;         // LoginRequest, LoginResponse, etc.
-using Orderflow.Identity.Services.Common;   // AuthResult<T>
+using Orderflow.Identity.DTOs.Auth;         
+using Orderflow.Identity.Services.Common;   
 using System.Linq;
-using Orderflow.Identity.Data;
+using Orderflow.Shared.Events;
 namespace Orderflow.Identity.Services.Auth
 {
     public class AuthService : IAuthService

@@ -2,44 +2,43 @@ using Asp.Versioning;
 using FluentValidation;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.OpenApi;
 using Scalar.AspNetCore;
-
 using Orderflow.Identity.Extensions;    // AddJwtAuthentication, OpenApiExtensions, DatabaseExtensions
 using Orderflow.Identity.Services;
 using Orderflow.Identity.Data;
 using Orderflow.Identity.Services.Auth;
-using Microsoft.Extensions.Hosting;       // IAuthService, AuthService
+using Orderflow.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ============================================
+// ASPIRE SERVICE DEFAULTS
+// ============================================
 builder.AddServiceDefaults();
 
-
-// Configure OpenAPI documents for different versions with JWT Bearer authentication
+// ============================================
+// OPENAPI / SCALAR + SEGURIDAD JWT EN DOCS
+// ============================================
 builder.Services.AddOpenApi("v1", options =>
 {
     options.ConfigureDocumentInfo(
         "Orderflow Identity API V1",
         "v1",
-        "Authentication API using Minimal APIs with JWT Bearer authentication");
+        "Authentication API using Controllers with JWT Bearer authentication");
     options.AddJwtBearerSecurity();
     options.FilterByApiVersion("v1");
 });
 
-builder.Services.AddOpenApi("v2", options =>
-{
-    options.ConfigureDocumentInfo(
-        "Orderflow Identity API V2",
-        "v2",
-        "Authentication API using Controllers with JWT Bearer authentication");
-    options.AddJwtBearerSecurity();
-    options.FilterByApiVersion("v2");
-});
-
-
+//builder.Services.AddOpenApi("v2", options =>
+//{
+//    options.ConfigureDocumentInfo(
+//        "Orderflow Identity API V2",
+//        "v2",
+//        "None by now, :) ");
+//    options.AddJwtBearerSecurity();
+//    options.FilterByApiVersion("v2");
+//});
 
 // ============================================
 // AUTORIZACIÓN + CONTROLLERS
@@ -53,20 +52,21 @@ builder.Services.AddControllers();
 builder.Services
     .AddApiVersioning(options =>
     {
-        options.DefaultApiVersion = new ApiVersion(1, 0);     // Por defecto v1 (puedes poner 2,0 si tus controllers son v2)
+        options.DefaultApiVersion = new ApiVersion(1, 0);
         options.AssumeDefaultVersionWhenUnspecified = true;
         options.ReportApiVersions = true;
         options.ApiVersionReader = new UrlSegmentApiVersionReader(); // /api/v{version}/...
     })
     .AddApiExplorer(options =>
     {
-        options.GroupNameFormat = "'v'VVV";                   // v1, v2, v2.0...
+        options.GroupNameFormat = "'v'VVV";   // v1, v2, v2.0...
         options.SubstituteApiVersionInUrl = true;
     });
 
 // ============================================
 // FLUENT VALIDATION
 // ============================================
+// Si tus validators están en este assembly, esto está OK
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // ============================================
@@ -86,7 +86,6 @@ builder.Services.AddCors(options =>
 // ============================================
 // DATABASE (PostgreSQL)
 // ============================================
-
 var connStr = builder.Configuration.GetConnectionString("identitydb");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -94,9 +93,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 //============================================
-//MASS TRANSIT + RABBITMQ(pendiente de consumers)
+// MASS TRANSIT + RABBITMQ (pendiente consumers)
 //============================================
-// Configure MassTransit with RabbitMQ for event publishing
 builder.Services.AddMassTransit(x =>
 {
     x.UsingRabbitMq((context, cfg) =>
@@ -142,16 +140,15 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 // ============================================
 // SERVICE LAYER
 // ============================================
-builder.Services.AddScoped<IAuthService, AuthService>();     
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-//NOT YET IMPLEMENTED
 // builder.Services.AddScoped<IUserService, UserService>();
 // builder.Services.AddScoped<IRoleService, RoleService>();
 
 // ============================================
 // JWT BEARER AUTHENTICATION
 // ============================================
-builder.Services.AddJwtAuthentication(builder.Configuration); // Tu extensión JWT
+builder.Services.AddJwtAuthentication(builder.Configuration); // extensión tuya
 
 var app = builder.Build();
 
@@ -160,24 +157,18 @@ var app = builder.Build();
 // ============================================
 if (app.Environment.IsDevelopment())
 {
-    // Migraciones + roles + admin
     await app.Services.SeedDevelopmentDataAsync();
 
-    // Documentos OpenAPI (usa los nombres del AddOpenApi)
-    app.MapOpenApi(); // expone /openapi/v1.json
+    app.MapOpenApi();
 
-    // Scalar UI
     app.MapScalarApiReference(options =>
     {
         options
             .WithTitle("Orderflow Identity API")
             .AddDocument("v1", "V1 - Controllers", "/openapi/v1.json", isDefault: true);
-
-        // Cuando tengas "v2":
         // .AddDocument("v2", "V2 - Controllers", "/openapi/v2.json");
     });
 
-    // Swagger UI opcional (si tienes Swashbuckle). Puedes eliminarlo cuando te quedes solo con Scalar.
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/openapi/v1.json", "Orderflow Identity API V1");
@@ -186,14 +177,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors();                // Siempre antes de Auth / AuthZ
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapDefaultEndpoints();    // Health checks / telemetry Aspire
-
-app.MapControllers();         // Solo controllers
+app.MapControllers();
 
 await app.RunAsync();

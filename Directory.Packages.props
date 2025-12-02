@@ -7,7 +7,7 @@
   <!--   Aspire / AppHost     -->
   <!-- ====================== -->
   <ItemGroup Label="Aspire">
-   <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.0.0" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.0.0" />
     <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.5.2" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.0" />
     <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="9.3.1" />
@@ -15,6 +15,7 @@
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2" />
     <PackageVersion Include="Aspire.StackExchange.Redis" Version="13.0.0" />
     <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.0" />
+    <PackageVersion Include="NETCore.MailKit" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup Label="Microsoft ASP.NET Core">
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
@@ -60,7 +61,7 @@
     <PackageVersion Include="RedisRateLimiting.AspNetCore" Version="1.2.0" />
   </ItemGroup>
   <ItemGroup Label="Development Tools">
-    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
   </ItemGroup>
   <ItemGroup Label="Email">
     <PackageVersion Include="MailKit" Version="4.12.1" />

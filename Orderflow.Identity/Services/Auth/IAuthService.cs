@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;                                // ClaimTypes, ClaimsPrincipal
 using Orderflow.Identity.DTOs.Auth;                           // LoginRequest, RegisterRequest, LoginResponse, RegisterResponse, CurrentUserResponse
 using Orderflow.Identity.DTOs;                                // ErrorResponse
+using Orderflow.Identity.Services.Common;
 
 namespace Orderflow.Identity.Services                          // Namespace de la capa de servicios
 {
@@ -9,43 +10,14 @@ namespace Orderflow.Identity.Services                          // Namespace de l
     {
         // Login de usuario: devuelve un resultado con éxito/datos/error
         Task<AuthResult<LoginResponse>> LoginAsync(
-            LoginRequest request,                             // DTO de entrada del login
-            CancellationToken cancellationToken = default);   // Token de cancelación
+            LoginRequest request);                             // DTO de entrada del login
 
         // Registro de usuario: idem, pero para alta de usuario
         Task<AuthResult<RegisterResponse>> RegisterAsync(
-            RegisterRequest request,                          // DTO de entrada del registro
-            CancellationToken cancellationToken = default);   // Token de cancelación
+            RegisterRequest request);                          // DTO de entrada del registro
 
-        // Obtener usuario actual a partir de los claims del token
+        // Obtener usuario actual a partir de los claims del token (aquí se usa userId directamente)
         Task<AuthResult<CurrentUserResponse>> GetCurrentUserAsync(
-            ClaimsPrincipal userPrincipal);                   // Usuario actual (HttpContext.User)
-    }
-
-    // Clase genérica para encapsular éxito/dato/error en las operaciones del servicio
-    public class AuthResult<T>
-    {
-        // Indica si la operación ha ido bien
-        public bool Success { get; set; }
-
-        // Datos devueltos cuando Success = true
-        public T? Data { get; set; }
-
-        // Información de error cuando Success = false
-        public ErrorResponse? Error { get; set; }
-
-        // Factory estático para devolver éxito con datos
-        public static AuthResult<T> Ok(T data) => new AuthResult<T>
-        {
-            Success = true,                                   // Marcamos operación como correcta
-            Data = data                                       // Adjuntamos datos
-        };
-
-        // Factory estático para devolver fallo con error
-        public static AuthResult<T> Fail(ErrorResponse error) => new AuthResult<T>
-        {
-            Success = false,                                  // Marcamos operación como fallida
-            Error = error                                     // Adjuntamos el error
-        };
+            string userId);                                   // Usuario actual (HttpContext.User)
     }
 }

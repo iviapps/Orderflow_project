@@ -1,11 +1,12 @@
 ﻿using Asp.Versioning;
+using Orderflow.Identity.DTOs.Auth;
 using Microsoft.AspNetCore.Mvc;
-using OrderFlow.Identity.Services.Auth;
-using Overflow.Identity.DTOs.Auth;
-using Overflow.Identity.Services;
+using Orderflow.Identity.Services;
 
-namespace OrderFlow.Identity.Controllers
+namespace Orderflow.Identity.Controllers
 {
+
+    
     [ApiController]
     [ApiVersion(1)]
     [Route("api/v{version:apiVersion}/auth")]
@@ -21,12 +22,16 @@ namespace OrderFlow.Identity.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
+            // Llamamos al servicio de autenticación
             var result = await _authService.LoginAsync(request);
 
-            if (!result.Success)
-                return Unauthorized(result.Error);
+            // OJO: la propiedad se llama Succeeded, no Success
+            if (!result.Succeeded)
+                // Puedes devolver directamente los errores o envolverlos en tu ErrorResponse
+                return Unauthorized(result.Errors);
 
-            return Ok(result);
+            // Si todo va bien, devolvemos el payload (Data) o el result entero, como prefieras
+            return Ok(result.Data);
         }
 
         [HttpPost("register")]
@@ -34,10 +39,11 @@ namespace OrderFlow.Identity.Controllers
         {
             var result = await _authService.RegisterAsync(request);
 
-            if (!result.Success)
-                return BadRequest(result.Error);
+            // Igual que arriba: usar Succeeded
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
 
-            return Ok(result);
+            return Ok(result.Data);
         }
     }
 }

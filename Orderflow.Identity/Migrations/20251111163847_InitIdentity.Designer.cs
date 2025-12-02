@@ -5,8 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Overflow.Identity.Data;
-
+using Orderflow.Identity.Data;  
 #nullable disable
 
 namespace Overflow.Identity.Migrations
