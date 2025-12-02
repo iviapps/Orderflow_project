@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Overflow.Identity.Data
+namespace Orderflow.Identity.Data
 {
     // Heredamos de IdentityDbContext, usando los tipos base de Identity
     public class AppDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>

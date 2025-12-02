@@ -7,35 +7,71 @@
   <!--   Aspire / AppHost     -->
   <!-- ====================== -->
   <ItemGroup Label="Aspire">
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.5.0" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.5.2" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.5.2" />
-    <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.1" />
+   <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.0.0" />
+    <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.5.2" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.0" />
+    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.0.0" />
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2" />
+    <PackageVersion Include="Aspire.StackExchange.Redis" Version="13.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.0" />
   </ItemGroup>
-  <!-- ====================== -->
-  <!--   Web API / Identity   -->
-  <!-- ====================== -->
-  <ItemGroup Label="Web API / Identity">
-    <PackageVersion Include="FluentValidation" Version="12.1.0" />
-    <!-- usabas 8.* -> fijamos 8.0.10 (última 8.0.x estable en tu csproj) -->
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  <ItemGroup Label="Microsoft ASP.NET Core">
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
   </ItemGroup>
-  <!-- ====================== -->
-  <!--   ServiceDefaults      -->
-  <!-- ====================== -->
-  <ItemGroup Label="ServiceDefaults / Telemetry">
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.9.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.5.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
+  <ItemGroup Label="Microsoft Entity Framework Core">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
+  </ItemGroup>
+  <ItemGroup Label="Microsoft Extensions">
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="8.10.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="10.0.0" />
+  </ItemGroup>
+  <ItemGroup Label="OpenTelemetry">
+    <!-- Using 1.14.0 for consistency across all projects -->
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
+  </ItemGroup>
+  <ItemGroup Label="Database Providers">
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+  </ItemGroup>
+  <ItemGroup Label="API and Versioning">
+    <PackageVersion Include="Asp.Versioning.Http" Version="8.1.0" />
+    <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageVersion Include="Microsoft.OpenApi" Version="2.0.0" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.10.3" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.0.1" />
+  </ItemGroup>
+  <ItemGroup Label="Validation">
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.0" />
+  </ItemGroup>
+  <ItemGroup Label="Reverse Proxy">
+    <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
+  </ItemGroup>
+  <ItemGroup Label="Rate Limiting">
+    <PackageVersion Include="RedisRateLimiting" Version="1.2.0" />
+    <PackageVersion Include="RedisRateLimiting.AspNetCore" Version="1.2.0" />
+  </ItemGroup>
+  <ItemGroup Label="Development Tools">
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+  </ItemGroup>
+  <ItemGroup Label="Email">
+    <PackageVersion Include="MailKit" Version="4.12.1" />
+  </ItemGroup>
+  <ItemGroup Label="Hosting">
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+  </ItemGroup>
+  <ItemGroup Label="Redis">
+    <PackageVersion Include="StackExchange.Redis" Version="2.9.32" />
+  </ItemGroup>
+  <ItemGroup Label="Messaging">
+    <PackageVersion Include="MassTransit.RabbitMQ" Version="8.4.0" />
   </ItemGroup>
 </Project>

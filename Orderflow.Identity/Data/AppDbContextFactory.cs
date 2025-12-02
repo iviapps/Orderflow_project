@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Overflow.Identity.Data
+namespace Orderflow.Identity.Data
 {
     // Solo para EF CLI (design-time). En runtime Aspire inyecta la conexión.
     public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>

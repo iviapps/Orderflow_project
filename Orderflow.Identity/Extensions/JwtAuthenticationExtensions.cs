@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace OrderFlow.Identity.Extensions;
+namespace Orderflow.Identity.Extensions;
 
 public static class JwtAuthenticationExtensions
 {
