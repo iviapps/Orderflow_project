@@ -1,3 +1,5 @@
+using EnvDTE;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 // ============================================
@@ -75,7 +77,7 @@ var catalogService = builder.AddProject<Projects.Orderflow_Catalog>("orderflow-c
 //// ============================================
 // API Gateway acts as the single entry point for all client requests
 // It handles authentication, authorization, rate limiting, and routes to microservices
-var apiGateway = builder.AddProject<Projects.Orderflow_ApiGateway>("Orderflow-apigateway")
+var apiGateway = builder.AddProject<Projects.Orderflow_ApiGateway>("orderflow-apigateway")
     .WithReference(redis) // Redis for rate limiting and caching
     .WithReference(identityService)
     //.WithReference(catalogService) -> catalogService not yet implemented

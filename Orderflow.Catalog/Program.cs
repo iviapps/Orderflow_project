@@ -1,33 +1,33 @@
 using Microsoft.EntityFrameworkCore;
 using Orderflow.Catalog.Data;
 using Orderflow.Shared.Extensions;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.AddServiceDefaults();
-// JWT Authentication (shared across all microservices)
-builder.Services.AddJwtAuthentication(builder.Configuration);
+
 // Add PostgreSQL DbContext
 builder.AddNpgsqlDbContext<CatalogDbContext>("catalogdb");
 
+// JWT Authentication (shared across all microservices)
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
-// Register services <- NOT IMPLEMENTED YET
+// Register services
 //builder.Services.AddScoped<ICategoryService, CategoryService>();
-//
 //builder.Services.AddScoped<IProductService, ProductService>();
-//builder.Services.AddScoped<IStockService, StockService>(); <- beware, we are using table 
+//builder.Services.AddScoped<IStockService, StockService>();
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
-
-// Configure the HTTP request pipeline.
-
+// Auto-migrate database in development
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
@@ -37,10 +37,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.MapDefaultEndpoints();
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

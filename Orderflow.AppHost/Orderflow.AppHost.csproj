@@ -16,10 +16,11 @@
 		<PackageReference Include="Aspire.Hosting.PostgreSQL" />
 		<PackageReference Include="Aspire.Hosting.RabbitMQ" />
 		<PackageReference Include="Aspire.Hosting.Redis" />
+		<PackageReference Include="EnvDTE" />
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Orderflow.API.Gateway\Orderflow.ApiGateway.csproj" />
+    <ProjectReference Include="..\Orderflow.Api.Gateway\Orderflow.ApiGateway.csproj" />
     <ProjectReference Include="..\Orderflow.Catalog\Orderflow.Catalog.csproj" />
     <ProjectReference Include="..\Orderflow.Identity\Orderflow.Identity.csproj" />
     <ProjectReference Include="..\Orderflow.Notifications\Orderflow.Notifications.csproj" />
