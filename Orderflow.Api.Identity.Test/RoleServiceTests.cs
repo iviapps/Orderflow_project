@@ -4,6 +4,7 @@ using Moq;
 using Orderflow.Shared.Common;
 using OrderFlow.Identity.Services.Roles;
 using MockQueryable; 
+using MockQueryable.Moq;
 
 namespace Orderflow.Identity.Tests.Services
 {
@@ -97,7 +98,7 @@ namespace Orderflow.Identity.Tests.Services
         {
             // Arrange
             var roles = new List<IdentityRole>();
-            var mockRoles = roles.AsQueryable().BuildMock();
+            var mockRoles = roles.BuildMock();
 
             _roleManagerMock
                 .Setup(rm => rm.Roles)

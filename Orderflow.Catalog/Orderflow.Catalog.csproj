@@ -12,6 +12,7 @@
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
 		<PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
 		<PackageReference Include="Scalar.AspNetCore" />
+		    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
 
 	</ItemGroup>
 
@@ -25,6 +26,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Controllers\" />
+	  <Folder Include="NewFolder\" />
 	</ItemGroup>
 
 </Project>
