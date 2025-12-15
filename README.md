@@ -240,22 +240,47 @@ dotnet run --project src/Orderflow.API.Gateway
 ## Configuración
 
 ### Variables de Entorno
+La configuración se gestiona mediante variables de entorno o `appsettings.json` (no incluido en el repositorio por seguridad).
 
-```json
-{
-  "Jwt": {
-    "Secret": "your-secret-key-min-32-characters",
-    "Issuer": "orderflow",
-    "Audience": "orderflow-api",
-    "ExpiryInMinutes": 60
-  },
-  "ConnectionStrings": {
-    "identitydb": "Host=localhost;Database=identitydb;Username=postgres;Password=postgres",
-    "catalogdb": "Host=localhost;Database=catalogdb;Username=postgres;Password=postgres",
-    "ordersdb": "Host=localhost;Database=ordersdb;Username=postgres;Password=postgres"
-  }
-}
-```
+ 
+
+**Variables requeridas:**
+
+ 
+
+| Variable | Descripción |
+
+|----------|-------------|
+
+| `Jwt__Secret` | Clave secreta para firmar tokens JWT (mín. 32 caracteres) |
+
+| `Jwt__Issuer` | Emisor del token JWT |
+
+| `Jwt__Audience` | Audiencia válida del token |
+
+| `Jwt__ExpiryInMinutes` | Tiempo de expiración del token |
+
+| `ConnectionStrings__identitydb` | Connection string PostgreSQL para Identity |
+
+| `ConnectionStrings__catalogdb` | Connection string PostgreSQL para Catalog |
+
+| `ConnectionStrings__ordersdb` | Connection string PostgreSQL para Orders |
+
+ 
+
+> **Nota**: Con .NET Aspire, las connection strings se configuran automáticamente mediante service discovery.
+
+ 
+
+### Configuración Local
+
+ 
+
+1. Copia `appsettings.Development.json.example` a `appsettings.Development.json`
+
+2. Configura tus credenciales locales
+
+3. **Nunca** commits archivos con credenciales reales
 
 ### Credenciales de Desarrollo
 
