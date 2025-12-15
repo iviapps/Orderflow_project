@@ -4,7 +4,7 @@ using Orderflow.Shared.Events;
 
 
 
-namespace OrderFlow.Notifications.Consumers;
+namespace Orderflow.Notifications.Consumers;
 
 public class UserRegisteredConsumer(
     IEmailService emailService,
