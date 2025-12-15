@@ -24,6 +24,7 @@
     <ProjectReference Include="..\Orderflow.Catalog\Orderflow.Catalog.csproj" />
     <ProjectReference Include="..\Orderflow.Identity\Orderflow.Identity.csproj" />
     <ProjectReference Include="..\Orderflow.Notifications\Orderflow.Notifications.csproj" />
+    <ProjectReference Include="..\Orderflow.Orders\Orderflow.Orders.csproj" />
   </ItemGroup>
 
 </Project>

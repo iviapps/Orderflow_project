@@ -15,6 +15,7 @@
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2" />
     <PackageVersion Include="Aspire.StackExchange.Redis" Version="13.0.0" />
     <PackageVersion Include="EnvDTE" Version="17.14.40260" />
+    <PackageVersion Include="MassTransit" Version="8.4.0" />
     <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.0" />
     <PackageVersion Include="MockQueryable.Core" Version="10.0.1" />
     <PackageVersion Include="MockQueryable.Moq" Version="10.0.1" />
@@ -84,7 +85,6 @@
     <PackageVersion Include="NUnit" Version="4.2.2" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.4.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />
-	  <PackageVersion Include="Moq" Version="4.20.72" />
-
+    <PackageVersion Include="Moq" Version="4.20.72" />
   </ItemGroup>
 </Project>

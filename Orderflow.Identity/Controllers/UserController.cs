@@ -4,7 +4,7 @@ using Asp.Versioning;
 using FluentValidation;
 using System.Security.Claims;
 using Orderflow.Identity.DTOs.Users.Responses;
-using OrderFlow.Identity.Services.Users;
+using Orderflow.Identity.Services.Users;
 
 namespace Orderflow.Identity.Controllers;
 

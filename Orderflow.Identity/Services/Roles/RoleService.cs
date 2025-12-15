@@ -2,12 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Orderflow.Identity.DTOs.Roles.Responses;
 using Orderflow.Identity.DTOs.Users.Responses;
-using Orderflow.Identity.Services.Roles;
 using Orderflow.Shared.Common;
-using OrderFlow.Shared.Common;
 
 
-namespace OrderFlow.Identity.Services.Roles;
+namespace Orderflow.Identity.Services.Roles;
 
 /// <summary>
 /// Service for role management operations

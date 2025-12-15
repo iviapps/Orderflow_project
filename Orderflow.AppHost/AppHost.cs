@@ -2,6 +2,7 @@ using EnvDTE;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+
 // ============================================
 // INFRASTRUCTURE
 // ============================================
@@ -49,28 +50,24 @@ var identityService = builder.AddProject<Projects.Orderflow_Identity>("orderflow
 var catalogService = builder.AddProject<Projects.Orderflow_Catalog>("orderflow-catalog")
     .WithReference(catalogDb)
     .WaitFor(catalogDb);
+   
 
 
-// -    -   -   -   -   -   -   -   -   -   NOT YET IMPLEMENTED -   -   -   -   -   -   -   -   -
 //// Notifications Worker - Listens to RabbitMQ events and sends emails
-//var notificationsService = builder.AddProject<Projects.Orderflow_Notifications>("Orderflow-notifications")
-//    .WithReference(rabbitmq)
-//    .WithEnvironment("Email__SmtpHost", maildev.GetEndpoint("smtp").Property(EndpointProperty.Host))
-//    .WithEnvironment("Email__SmtpPort", maildev.GetEndpoint("smtp").Property(EndpointProperty.Port))
-//    .WaitFor(rabbitmq);
+var notificationsService = builder.AddProject<Projects.Orderflow_Notifications>("Orderflow-notifications")
+    .WithReference(rabbitmq)
+    .WithEnvironment("Email__SmtpHost", maildev.GetEndpoint("smtp").Property(EndpointProperty.Host))
+    .WithEnvironment("Email__SmtpPort", maildev.GetEndpoint("smtp").Property(EndpointProperty.Port))
+    .WaitFor(rabbitmq);
 
-//// Catalog Service - Products and Categories
-//var catalogService = builder.AddProject<Projects.Orderflow_Catalog>("Orderflow-catalog")
-//    .WithReference(catalogDb)
-//    .WaitFor(catalogDb);
 
 //// Orders Service - Order management
-//var ordersService = builder.AddProject<Projects.Orderflow_Orders>("Orderflow-orders")
-//    .WithReference(ordersDb)
-//    .WithReference(rabbitmq)
-//    .WithReference(catalogService)
-//    .WaitFor(ordersDb)
-//    .WaitFor(rabbitmq);
+var ordersService = builder.AddProject<Projects.Orderflow_Orders>("Orderflow-orders")
+    .WithReference(ordersDb)
+    .WithReference(rabbitmq)
+    .WithReference(catalogService)
+    .WaitFor(ordersDb)
+    .WaitFor(rabbitmq);
 
 //// ============================================
 //// API GATEWAY
@@ -81,10 +78,10 @@ var apiGateway = builder.AddProject<Projects.Orderflow_ApiGateway>("orderflow-ap
     .WithReference(redis) // Redis for rate limiting and caching
     .WithReference(identityService)
     .WithReference(catalogService)
-    //.WithReference(ordersService) 
+    .WithReference(ordersService)
     .WaitFor(identityService)
-    .WaitFor(catalogService); 
-//.WaitFor(ordersService); -> wait for complimenting services, same as before
+    .WaitFor(catalogService)
+    .WaitFor(ordersService);
 
 
 
@@ -99,27 +96,6 @@ var apiGateway = builder.AddProject<Projects.Orderflow_ApiGateway>("orderflow-ap
 //    .WaitFor(apiGateway)
 //    .WithExternalHttpEndpoints() // Make endpoint accessible via Aspire dashboard
 //    .PublishAsDockerFile();
-
-
-
-
-// -    -   -   -   -   -   -   -   -   -   NOT YET IMPLEMENTED -   -   -   -   -   -   -   -   -
-//// Notifications Worker - Listens to RabbitMQ events and sends emails
-//var notificationsService = builder.AddProject<Projects.Orderflow_Notifications>("Orderflow-notifications")
-//    .WithReference(rabbitmq)
-//    .WithEnvironment("Email__SmtpHost", maildev.GetEndpoint("smtp").Property(EndpointProperty.Host))
-//    .WithEnvironment("Email__SmtpPort", maildev.GetEndpoint("smtp").Property(EndpointProperty.Port))
-//    .WaitFor(rabbitmq);
-
-
-//// Orders Service - Order management
-//var ordersService = builder.AddProject<Projects.Orderflow_Orders>("Orderflow-orders")
-//    .WithReference(ordersDb)
-//    .WithReference(rabbitmq)
-//    .WithReference(catalogService)
-//    .WaitFor(ordersDb)
-//    .WaitFor(rabbitmq);
-
 
 
 

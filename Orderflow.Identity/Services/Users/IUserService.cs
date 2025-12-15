@@ -3,9 +3,8 @@ using Orderflow.Identity.DTOs.Users.Requests;
 using Orderflow.Identity.DTOs.Users.Responses;
 using Orderflow.Shared.Common;
 
-using OrderFlow.Shared.Common;
 
-namespace OrderFlow.Identity.Services.Users;
+namespace Orderflow.Identity.Services.Users;
 
 /// <summary>
 /// Service for user management operations

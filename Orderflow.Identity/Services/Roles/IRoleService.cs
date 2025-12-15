@@ -1,7 +1,6 @@
 ﻿using Orderflow.Identity.DTOs.Roles.Responses;
 using Orderflow.Identity.DTOs.Users.Responses;
 using Orderflow.Shared.Common;
-using OrderFlow.Shared.Common;
 
 namespace Orderflow.Identity.Services.Roles;
 

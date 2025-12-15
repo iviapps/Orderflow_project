@@ -1,6 +1,6 @@
 ﻿using Orderflow.Shared.Common;
 
-namespace OrderFlow.Shared.Common;
+namespace Orderflow.Shared.Common;
 
 /// <summary>
 /// Result type for paginated service operations

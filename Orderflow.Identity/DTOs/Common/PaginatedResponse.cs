@@ -1,6 +1,6 @@
 ﻿using Orderflow.Shared.Common;
 
-namespace OrderFlow.Identity.Dtos.Common;
+namespace Orderflow.Identity.Dtos.Common;
 
 /// <summary>
 /// Generic paginated response wrapper for collections

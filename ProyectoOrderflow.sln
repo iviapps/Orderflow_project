@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orderflow.Catalog", "Orderf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orderflow.Api.Identity.Test", "Orderflow.Api.Identity.Test\Orderflow.Api.Identity.Test.csproj", "{B9ECB334-9BEB-4623-A2FD-47BDD09274D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orderflow.Orders", "Orderflow.Orders\Orderflow.Orders.csproj", "{CE1F1AE8-47A5-6D5E-C04D-6D57959987F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{B9ECB334-9BEB-4623-A2FD-47BDD09274D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9ECB334-9BEB-4623-A2FD-47BDD09274D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9ECB334-9BEB-4623-A2FD-47BDD09274D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE1F1AE8-47A5-6D5E-C04D-6D57959987F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE1F1AE8-47A5-6D5E-C04D-6D57959987F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE1F1AE8-47A5-6D5E-C04D-6D57959987F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE1F1AE8-47A5-6D5E-C04D-6D57959987F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

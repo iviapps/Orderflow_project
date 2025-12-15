@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using FluentValidation;
-using OrderFlow.Identity.Services.Users;
-using OrderFlow.Shared.Common;
-using OrderFlow.Identity.Dtos.Common;
 using Orderflow.Identity.DTOs.Users.Requests;
 using Orderflow.Identity.DTOs.Users.Responses;
+using Orderflow.Identity.Services.Users;
+using Orderflow.Identity.Dtos.Common;
 
 namespace OrderFlow.Identity.Controllers; 
 

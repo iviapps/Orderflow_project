@@ -4,8 +4,7 @@ using Orderflow.Identity.DTOs.Users.Queries;
 using Orderflow.Identity.DTOs.Users.Requests;
 using Orderflow.Identity.DTOs.Users.Responses;
 using Orderflow.Shared.Common;
-using OrderFlow.Identity.Services.Users;
-using OrderFlow.Shared.Common;
+
 
 
 namespace Orderflow.Identity.Services.Users;
