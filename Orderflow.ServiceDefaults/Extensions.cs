@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Npgsql;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -61,6 +62,8 @@ public static class Extensions
             .WithTracing(tracing =>
             {
                 tracing.AddSource(builder.Environment.ApplicationName)
+                    .AddSource("Orderflow.*") // ActivitySource personalizado para todos los servicios
+                    .AddSource("Orderflow.Custom") // ActivitySource para trazas manuales
                     .AddAspNetCoreInstrumentation(tracing =>
                         // Exclude health check requests from tracing
                         tracing.Filter = context =>
@@ -69,7 +72,19 @@ public static class Extensions
                     )
                     // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
                     //.AddGrpcClientInstrumentation()
-                    .AddHttpClientInstrumentation();
+                    .AddHttpClientInstrumentation()
+                    .AddEntityFrameworkCoreInstrumentation(efOptions =>
+                    {
+                        // Configuración para ver las queries SQL
+                        efOptions.SetDbStatementForText = true;
+                        efOptions.SetDbStatementForStoredProcedure = true;
+                        efOptions.EnrichWithIDbCommand = (activity, command) =>
+                        {
+                            activity.SetTag("db.command_timeout", command.CommandTimeout);
+                        };
+                    })
+                    .AddNpgsql() // Instrumentación para PostgreSQL
+                    .AddSource("MassTransit"); // Instrumentación para MassTransit/RabbitMQ
             });
 
         builder.AddOpenTelemetryExporters();
