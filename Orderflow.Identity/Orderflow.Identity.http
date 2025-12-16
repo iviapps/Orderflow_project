@@ -1,6 +1,6 @@
-@Overflow.Identity_HostAddress = http://localhost:5188
+@Orderflow.Identity_HostAddress = http://localhost:5188
 
-GET {{Overflow.Identity_HostAddress}}/weatherforecast/
+GET {{Orderflow.Identity_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

@@ -1562,7 +1562,7 @@ Orderflow_project/
 
 ├── Orderflow.ServiceDefaults/   # Configuración compartida
 
-├── Overflow.Shared/             # DTOs, eventos y extensiones
+├── Orderflow.Shared/             # DTOs, eventos y extensiones
 
 ├── Orderflow.Api.Identity.Test/ # Tests del servicio Identity
 

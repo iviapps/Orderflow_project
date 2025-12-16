@@ -8,7 +8,7 @@ on:
     paths:
       - 'Orderflow.Identity/**'
       - 'Orderflow.ServiceDefaults/**'
-      - 'Overflow.Shared/**'
+      - 'Orderflow.Shared/**'
       - 'Directory.Packages.props'
       - '.github/workflows/identity-api-docker.yml'
   pull_request:

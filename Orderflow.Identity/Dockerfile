@@ -15,7 +15,7 @@ WORKDIR /src
 COPY ["Directory.Packages.props", "."]
 COPY ["Orderflow.Identity/Orderflow.Identity.csproj", "Orderflow.Identity/"]
 COPY ["Orderflow.ServiceDefaults/Orderflow.ServiceDefaults.csproj", "Orderflow.ServiceDefaults/"]
-COPY ["Overflow.Shared/Orderflow.Shared.csproj", "Overflow.Shared/"]
+COPY ["Orderflow.Shared/Orderflow.Shared.csproj", "Orderflow.Shared/"]
 RUN dotnet restore "./Orderflow.Identity/Orderflow.Identity.csproj"
 COPY . .
 WORKDIR "/src/Orderflow.Identity"

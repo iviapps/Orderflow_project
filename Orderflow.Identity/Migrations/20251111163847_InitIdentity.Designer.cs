@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Orderflow.Identity.Data;  
 #nullable disable
 
-namespace Overflow.Identity.Migrations
+namespace Orderflow.Identity.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20251111163847_InitIdentity")]

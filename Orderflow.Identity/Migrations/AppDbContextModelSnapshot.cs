@@ -8,7 +8,7 @@ using Orderflow.Identity.Data;
 
 #nullable disable
 
-namespace Overflow.Identity.Migrations
+namespace Orderflow.Identity.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot

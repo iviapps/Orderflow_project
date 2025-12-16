@@ -18,6 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Orderflow.ServiceDefaults\Orderflow.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\Overflow.Shared\Orderflow.Shared.csproj" />
+    <ProjectReference Include="..\Orderflow.Shared\Orderflow.Shared.csproj" />
   </ItemGroup>
 </Project>

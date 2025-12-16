@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Overflow.Identity.Migrations
+namespace Orderflow.Identity.Migrations
 {
     /// <inheritdoc />
     public partial class InitIdentity : Migration

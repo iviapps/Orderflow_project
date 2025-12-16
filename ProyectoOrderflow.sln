@@ -19,7 +19,7 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "orderflow.web", "Orderflow.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orderflow.Notifications", "Orderflow.Notifications\Orderflow.Notifications.csproj", "{EAA3BC1F-3220-4C28-963C-719382C4CCB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orderflow.Shared", "Overflow.Shared\Orderflow.Shared.csproj", "{86BC3811-40D3-473A-BD4D-719F8A3C26B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orderflow.Shared", "Orderflow.Shared\Orderflow.Shared.csproj", "{86BC3811-40D3-473A-BD4D-719F8A3C26B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orderflow.ApiGateway", "Orderflow.API.Gateway\Orderflow.ApiGateway.csproj", "{C2DE0A1C-1031-36F1-4734-17FB1D872F7C}"
 EndProject
