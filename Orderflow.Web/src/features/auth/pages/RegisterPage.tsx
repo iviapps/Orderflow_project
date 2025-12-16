@@ -1,16 +1,13 @@
 import { useState } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { api } from "../../../lib/api";
-import { tokenStorage } from "../../../lib/storage";
 
-export function LoginPage() {
+export function RegisterPage() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const successMessage = location.state?.message;
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,28 +15,29 @@ export function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Las contraseñas no coinciden");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await api.post("/api/v1/auth/login", {
+      await api.post("/api/v1/auth/register", {
         email: formData.email,
         password: formData.password,
       });
 
-      // Guardar el token en localStorage
-      const token = response.data.token;
-      tokenStorage.set(token);
-
-      // Configurar el header de autorización para futuras peticiones
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-      // Redirigir a la página principal
-      navigate("/");
+      // Redirigir al login después del registro exitoso
+      navigate("/login", {
+        state: { message: "Registro exitoso. Por favor inicia sesión." },
+      });
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
           err.response?.data?.errors?.join(", ") ||
-          "Email o contraseña incorrectos"
+          "Error al registrarse. Por favor intenta de nuevo."
       );
     } finally {
       setLoading(false);
@@ -50,14 +48,8 @@ export function LoginPage() {
     <div className="max-w-md mx-auto mt-8">
       <div className="bg-white shadow-md rounded-lg p-8">
         <h1 className="text-2xl font-bold text-center mb-6">
-          Iniciar Sesión
+          Crear Cuenta
         </h1>
-
-        {successMessage && (
-          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">
-            {successMessage}
-          </div>
-        )}
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
@@ -101,6 +93,28 @@ export function LoginPage() {
                 setFormData({ ...formData, password: e.target.value })
               }
               required
+              minLength={6}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Confirmar Contraseña
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
+              required
+              minLength={6}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••••"
             />
@@ -111,26 +125,16 @@ export function LoginPage() {
             disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 disabled:bg-blue-300 disabled:cursor-not-allowed"
           >
-            {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
+            {loading ? "Registrando..." : "Registrarse"}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-600 mt-4">
-          ¿No tienes cuenta?{" "}
-          <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
-            Regístrate aquí
+          ¿Ya tienes cuenta?{" "}
+          <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+            Inicia sesión
           </Link>
         </p>
-
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-xs text-gray-500 text-center">
-            <strong>Credenciales de prueba (Admin):</strong>
-            <br />
-            Email: admin@admin.com
-            <br />
-            Contraseña: Test12345.
-          </p>
-        </div>
       </div>
     </div>
   );

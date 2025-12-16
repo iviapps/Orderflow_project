@@ -1025,6 +1025,62 @@ public class UserServiceTests
 
     #endregion
 
+    #region GetCurrentUserProfileAsync
+
+    [Test]
+    public async Task GetCurrentUserProfileAsync_WhenUserExists_ReturnsProfile()
+    {
+        // Arrange
+        var user = new IdentityUser
+        {
+            Id = "1",
+            Email = "test@test.com",
+            UserName = "testuser",
+            EmailConfirmed = true,
+            PhoneNumber = "123456789",
+            TwoFactorEnabled = false
+        };
+
+        _userManagerMock
+            .Setup(um => um.FindByIdAsync("1"))
+            .ReturnsAsync(user);
+
+        _userManagerMock
+            .Setup(um => um.GetRolesAsync(user))
+            .ReturnsAsync(new List<string> { "Customer" });
+
+        // Act
+        var result = await _userService.GetCurrentUserProfileAsync("1");
+
+        // Assert
+        Assert.That(result.Succeeded, Is.True);
+        Assert.That(result.Data, Is.Not.Null);
+        Assert.That(result.Data!.UserId, Is.EqualTo("1"));
+        Assert.That(result.Data.Email, Is.EqualTo("test@test.com"));
+        Assert.That(result.Data.UserName, Is.EqualTo("testuser"));
+        Assert.That(result.Data.PhoneNumber, Is.EqualTo("123456789"));
+        Assert.That(result.Data.Roles, Does.Contain("Customer"));
+    }
+
+    [Test]
+    public async Task GetCurrentUserProfileAsync_WhenUserNotFound_ReturnsFailure()
+    {
+        // Arrange
+        _userManagerMock
+            .Setup(um => um.FindByIdAsync("999"))
+            .ReturnsAsync((IdentityUser?)null);
+
+        // Act
+        var result = await _userService.GetCurrentUserProfileAsync("999");
+
+        // Assert
+        Assert.That(result.Succeeded, Is.False);
+        Assert.That(result.Errors, Is.Not.Null.And.Not.Empty);
+        Assert.That(result.Errors!.First(), Is.EqualTo("User not found"));
+    }
+
+    #endregion
+
     #region UpdateCurrentUserProfileAsync
 
     [Test]
