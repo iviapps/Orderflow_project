@@ -185,7 +185,7 @@ public class ProductsController(IProductService productService, IStockService st
     }
 
     [HttpPost("{id:int}/stock/reserve")]
-    [Authorize]
+   
     [ProducesResponseType(typeof(StockResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
@@ -224,7 +224,7 @@ public class ProductsController(IProductService productService, IStockService st
     }
 
     [HttpPost("{id:int}/stock/release")]
-    [Authorize]
+ 
     [ProducesResponseType(typeof(StockResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
