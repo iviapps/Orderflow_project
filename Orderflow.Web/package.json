@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-     "dev": "cross-env-shell \"vite --host --port $VITE_PORT\"",
+    "dev": "cross-env-shell \"vite --host --port %VITE_PORT%\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
