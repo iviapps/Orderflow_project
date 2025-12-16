@@ -1,5 +1,4 @@
-﻿
-namespace Orderflow.Orders.Clients;
+﻿namespace Orderflow.Orders.Clients;
 
 public class CatalogClient(IHttpClientFactory httpClientFactory, ILogger<CatalogClient> logger) : ICatalogClient
 {
@@ -32,7 +31,7 @@ public class CatalogClient(IHttpClientFactory httpClientFactory, ILogger<Catalog
         {
             var response = await _http.PostAsJsonAsync(
                 $"/api/v1/products/{productId}/stock/reserve",
-                new { quantity });
+                new { Quantity = quantity });  // ← CAMBIO: Quantity con mayúscula
 
             if (!response.IsSuccessStatusCode)
             {
@@ -56,7 +55,7 @@ public class CatalogClient(IHttpClientFactory httpClientFactory, ILogger<Catalog
         {
             var response = await _http.PostAsJsonAsync(
                 $"/api/v1/products/{productId}/stock/release",
-                new { quantity });
+                new { Quantity = quantity });  // ← CAMBIO: Quantity con mayúscula
 
             if (!response.IsSuccessStatusCode)
             {
