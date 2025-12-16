@@ -33,7 +33,10 @@ export function ProductsPage() {
       });
   }, []);
 
-  const categories = ["all", ...new Set(products.map((p) => p.category))];
+  const categories = [
+    "all",
+    ...new Set(products.map((p) => p.category).filter((c) => c != null)),
+  ];
 
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
