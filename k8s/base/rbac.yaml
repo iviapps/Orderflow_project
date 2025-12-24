@@ -1,0 +1,200 @@
+# RBAC Configuration for OrderFlow Services
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: orderflow-service-account
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow
+    app.kubernetes.io/component: rbac
+---
+# Role for reading configmaps and secrets (if needed by services)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: orderflow-config-reader
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list"]
+    resourceNames:
+      - orderflow-secrets
+      - orderflow-smtp-secrets
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: orderflow-config-reader-binding
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: orderflow-config-reader
+subjects:
+  - kind: ServiceAccount
+    name: orderflow-service-account
+    namespace: orderflow
+---
+# Network Policy - restrict traffic between services
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: orderflow-default-deny
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+# Allow ingress from ingress controller
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress
+  namespace: orderflow
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: gateway
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+# Allow gateway to reach microservices
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-to-services
+  namespace: orderflow
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/component
+        operator: In
+        values:
+          - identity
+          - catalog
+          - orders
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/component: gateway
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+# Allow services to reach databases
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-services-to-db
+  namespace: orderflow
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: database
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                  - identity
+                  - catalog
+                  - orders
+      ports:
+        - protocol: TCP
+          port: 5432
+---
+# Allow services to reach RabbitMQ
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-services-to-rabbitmq
+  namespace: orderflow
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: messaging
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                  - identity
+                  - orders
+                  - notifications
+      ports:
+        - protocol: TCP
+          port: 5672
+---
+# Allow gateway to reach Redis
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-to-redis
+  namespace: orderflow
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: cache
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/component: gateway
+      ports:
+        - protocol: TCP
+          port: 6379
+---
+# Allow DNS resolution for all pods
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: orderflow
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

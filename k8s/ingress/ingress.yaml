@@ -1,0 +1,112 @@
+# OrderFlow Ingress Configuration
+# Requires an Ingress Controller (nginx-ingress, traefik, etc.)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: orderflow-ingress
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow
+    app.kubernetes.io/component: ingress
+  annotations:
+    # NGINX Ingress Controller annotations
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+
+    # SSL/TLS with cert-manager
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+
+    # Rate limiting at ingress level
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    nginx.ingress.kubernetes.io/limit-connections: "50"
+
+    # Enable CORS
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://orderflow.yourdomain.com"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Authorization, Content-Type"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.orderflow.yourdomain.com
+        - orderflow.yourdomain.com
+      secretName: orderflow-tls-secret
+  rules:
+    # API Gateway - handles all backend traffic
+    - host: api.orderflow.yourdomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: orderflow-gateway
+                port:
+                  number: 80
+    # Frontend application
+    - host: orderflow.yourdomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: orderflow-frontend
+                port:
+                  number: 80
+---
+# Alternative: Separate ingress for API with different settings
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: orderflow-api-ingress
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow
+    app.kubernetes.io/component: api-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+
+    # WebSocket support (if needed)
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$remote_addr"
+
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.orderflow.yourdomain.com
+      secretName: orderflow-api-tls-secret
+  rules:
+    - host: api.orderflow.yourdomain.com
+      http:
+        paths:
+          # Identity endpoints
+          - path: /api/v1/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: orderflow-gateway
+                port:
+                  number: 80
+          # Catalog endpoints
+          - path: /api/v1/catalog
+            pathType: Prefix
+            backend:
+              service:
+                name: orderflow-gateway
+                port:
+                  number: 80
+          # Orders endpoints
+          - path: /api/v1/orders
+            pathType: Prefix
+            backend:
+              service:
+                name: orderflow-gateway
+                port:
+                  number: 80

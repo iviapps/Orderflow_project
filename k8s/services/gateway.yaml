@@ -1,0 +1,176 @@
+# OrderFlow API Gateway - YARP Reverse Proxy
+apiVersion: v1
+kind: Service
+metadata:
+  name: orderflow-gateway
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow-gateway
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/part-of: orderflow-platform
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: orderflow-gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderflow-gateway
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow-gateway
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/part-of: orderflow-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: orderflow-gateway
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: orderflow-gateway
+        app.kubernetes.io/component: gateway
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: orderflow-service-account
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: gateway
+          image: ghcr.io/iviapps/orderflow-gateway:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: ASPNETCORE_ENVIRONMENT
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            # JWT Configuration
+            - name: Jwt__Secret
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-secrets
+                  key: jwt-secret
+            - name: Jwt__Issuer
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: JWT_ISSUER
+            - name: Jwt__Audience
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: JWT_AUDIENCE
+            # Redis for Rate Limiting
+            - name: ConnectionStrings__cache
+              value: "$(REDIS_HOST):$(REDIS_PORT),password=$(REDIS_PASSWORD),abortConnect=false"
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: REDIS_PORT
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-secrets
+                  key: redis-password
+            # Service URLs for YARP routing
+            - name: ReverseProxy__Clusters__identity__Destinations__destination1__Address
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: IDENTITY_SERVICE_URL
+            - name: ReverseProxy__Clusters__catalog__Destinations__destination1__Address
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: CATALOG_SERVICE_URL
+            - name: ReverseProxy__Clusters__orders__Destinations__destination1__Address
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: ORDERS_SERVICE_URL
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /alive
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 20
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - orderflow-gateway
+                topologyKey: kubernetes.io/hostname

@@ -1,0 +1,193 @@
+# OrderFlow Identity Service - Authentication & User Management
+apiVersion: v1
+kind: Service
+metadata:
+  name: orderflow-identity
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow-identity
+    app.kubernetes.io/component: identity
+    app.kubernetes.io/part-of: orderflow-platform
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: orderflow-identity
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderflow-identity
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow-identity
+    app.kubernetes.io/component: identity
+    app.kubernetes.io/part-of: orderflow-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: orderflow-identity
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: orderflow-identity
+        app.kubernetes.io/component: identity
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: orderflow-service-account
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: identity
+          image: ghcr.io/iviapps/orderflow-identity:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: ASPNETCORE_ENVIRONMENT
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            # JWT Configuration
+            - name: Jwt__Secret
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-secrets
+                  key: jwt-secret
+            - name: Jwt__Issuer
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: JWT_ISSUER
+            - name: Jwt__Audience
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: JWT_AUDIENCE
+            - name: Jwt__ExpiryInMinutes
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: JWT_EXPIRY_MINUTES
+            # Database Connection
+            - name: ConnectionStrings__identitydb
+              value: "Host=$(POSTGRES_HOST);Port=$(POSTGRES_PORT);Database=identitydb;Username=$(DB_USER);Password=$(DB_PASSWORD)"
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: POSTGRES_PORT
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-secrets
+                  key: postgres-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-secrets
+                  key: identity-db-password
+            # RabbitMQ Connection
+            - name: ConnectionStrings__messaging
+              value: "amqp://$(RABBITMQ_USER):$(RABBITMQ_PASSWORD)@$(RABBITMQ_HOST):$(RABBITMQ_PORT)"
+            - name: RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: RABBITMQ_HOST
+            - name: RABBITMQ_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: RABBITMQ_PORT
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-secrets
+                  key: rabbitmq-user
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-secrets
+                  key: rabbitmq-password
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /alive
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 30
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - orderflow-identity
+                topologyKey: kubernetes.io/hostname

@@ -1,0 +1,59 @@
+# Kustomize configuration for OrderFlow
+# Use: kubectl apply -k k8s/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: orderflow
+
+# Common labels applied to all resources
+commonLabels:
+  app.kubernetes.io/managed-by: kustomize
+  app.kubernetes.io/version: "1.0.0"
+
+# Resources to include
+resources:
+  # Base configuration
+  - base/namespace.yaml
+  - base/secrets.yaml
+  - base/configmap.yaml
+  - base/rbac.yaml
+  - base/hpa.yaml
+
+  # Infrastructure
+  - infrastructure/postgres.yaml
+  - infrastructure/redis.yaml
+  - infrastructure/rabbitmq.yaml
+
+  # Microservices
+  - services/identity.yaml
+  - services/catalog.yaml
+  - services/orders.yaml
+  - services/notifications.yaml
+  - services/gateway.yaml
+  - services/frontend.yaml
+
+  # Ingress
+  - ingress/ingress.yaml
+
+# Image customization (override in overlays)
+images:
+  - name: ghcr.io/iviapps/orderflow-identity
+    newTag: latest
+  - name: ghcr.io/iviapps/orderflow-catalog
+    newTag: latest
+  - name: ghcr.io/iviapps/orderflow-orders
+    newTag: latest
+  - name: ghcr.io/iviapps/orderflow-notifications
+    newTag: latest
+  - name: ghcr.io/iviapps/orderflow-gateway
+    newTag: latest
+  - name: ghcr.io/iviapps/orderflow-frontend
+    newTag: latest
+
+# Config generation (alternative to static secrets.yaml)
+# secretGenerator:
+#   - name: orderflow-secrets
+#     literals:
+#       - jwt-secret=CHANGE_ME
+#     options:
+#       disableNameSuffixHash: true

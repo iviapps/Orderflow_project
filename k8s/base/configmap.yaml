@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orderflow-config
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow
+    app.kubernetes.io/component: config
+data:
+  # Environment
+  ASPNETCORE_ENVIRONMENT: "Production"
+
+  # JWT Configuration (non-sensitive)
+  JWT_ISSUER: "Orderflow.Identity"
+  JWT_AUDIENCE: "Orderflow.Client"
+  JWT_EXPIRY_MINUTES: "60"
+
+  # Service Discovery (internal Kubernetes DNS)
+  IDENTITY_SERVICE_URL: "http://orderflow-identity:80"
+  CATALOG_SERVICE_URL: "http://orderflow-catalog:80"
+  ORDERS_SERVICE_URL: "http://orderflow-orders:80"
+  API_GATEWAY_URL: "http://orderflow-gateway:80"
+
+  # Database Hosts (internal)
+  POSTGRES_HOST: "orderflow-postgres"
+  POSTGRES_PORT: "5432"
+
+  # Redis Configuration
+  REDIS_HOST: "orderflow-redis"
+  REDIS_PORT: "6379"
+
+  # RabbitMQ Configuration
+  RABBITMQ_HOST: "orderflow-rabbitmq"
+  RABBITMQ_PORT: "5672"
+
+  # Logging
+  Logging__LogLevel__Default: "Information"
+  Logging__LogLevel__Microsoft.AspNetCore: "Warning"
+  Logging__LogLevel__Microsoft.EntityFrameworkCore: "Warning"
+
+  # OpenTelemetry (optional - configure your collector)
+  OTEL_EXPORTER_OTLP_ENDPOINT: ""
+  OTEL_SERVICE_NAME: "orderflow"
+---
+# Frontend specific configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orderflow-frontend-config
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow
+    app.kubernetes.io/component: frontend
+data:
+  # These will be injected at build time or runtime
+  VITE_API_GATEWAY_URL: "https://api.orderflow.yourdomain.com"
+  VITE_PORT: "80"

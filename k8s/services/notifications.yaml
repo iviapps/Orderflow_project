@@ -1,0 +1,111 @@
+# OrderFlow Notifications Worker - Background Email Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderflow-notifications
+  namespace: orderflow
+  labels:
+    app.kubernetes.io/name: orderflow-notifications
+    app.kubernetes.io/component: notifications
+    app.kubernetes.io/part-of: orderflow-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: orderflow-notifications
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: orderflow-notifications
+        app.kubernetes.io/component: notifications
+    spec:
+      serviceAccountName: orderflow-service-account
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: notifications
+          image: ghcr.io/iviapps/orderflow-notifications:latest
+          imagePullPolicy: Always
+          env:
+            - name: DOTNET_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: ASPNETCORE_ENVIRONMENT
+            # RabbitMQ Connection
+            - name: ConnectionStrings__messaging
+              value: "amqp://$(RABBITMQ_USER):$(RABBITMQ_PASSWORD)@$(RABBITMQ_HOST):$(RABBITMQ_PORT)"
+            - name: RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: RABBITMQ_HOST
+            - name: RABBITMQ_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: orderflow-config
+                  key: RABBITMQ_PORT
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-secrets
+                  key: rabbitmq-user
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-secrets
+                  key: rabbitmq-password
+            # SMTP Configuration
+            - name: Email__SmtpHost
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-smtp-secrets
+                  key: smtp-host
+            - name: Email__SmtpPort
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-smtp-secrets
+                  key: smtp-port
+            - name: Email__From
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-smtp-secrets
+                  key: smtp-from
+            - name: Email__Username
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-smtp-secrets
+                  key: smtp-user
+            - name: Email__Password
+              valueFrom:
+                secretKeyRef:
+                  name: orderflow-smtp-secrets
+                  key: smtp-password
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
