@@ -1,7 +1,8 @@
-using EnvDTE;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+
+var jwtSecret = builder.AddParameter("jwt-secret", secret: true);
 
 // ============================================
 // INFRASTRUCTURE
@@ -43,8 +44,10 @@ var maildev = builder.AddContainer("maildev", "maildev/maildev")
 var identityService = builder.AddProject<Projects.Orderflow_Identity>("orderflow-identity")
     .WithReference(identityDb)
     .WithReference(rabbitmq)
+    .WithEnvironment("Jwt__Secret", jwtSecret) // primero
     .WaitFor(identityDb)
     .WaitFor(rabbitmq);
+
 
 // Catalog Service - Products and Categories
 var catalogService = builder.AddProject<Projects.Orderflow_Catalog>("orderflow-catalog")
@@ -79,6 +82,7 @@ var apiGateway = builder.AddProject<Projects.Orderflow_ApiGateway>("orderflow-ap
     .WithReference(identityService)
     .WithReference(catalogService)
     .WithReference(ordersService)
+    .WithEnvironment("Jwt__Secret", jwtSecret)
     .WaitFor(identityService)
     .WaitFor(catalogService)
     .WaitFor(ordersService);
